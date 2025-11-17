@@ -1,24 +1,16 @@
-// server.js
-import express from "express";
-import fetch from "node-fetch"; // npm install node-fetch
-import cors from "cors";
+const express = require("express");
+const fetch = require("node-fetch");
+const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ----------------------
-// Configurações
-// ----------------------
 app.use(cors());
 app.use(express.json());
-app.use(express.static("public")); // Coloque index.html e script.js na pasta /public
+app.use(express.static("public"));
 
-// ----------------------
-// Rota para chat
-// ----------------------
 app.post("/api/chat", async (req, res) => {
   const { prompt } = req.body;
-
   if (!prompt) return res.status(400).json({ error: "Prompt vazio" });
 
   try {
@@ -29,27 +21,20 @@ app.post("/api/chat", async (req, res) => {
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: "gpt-5-mini", // GPT-5 mini
+        model: "gpt-5-mini",
         messages: [{ role: "user", content: prompt }]
       })
     });
-
     const data = await response.json();
-    const message = data.choices[0].message.content;
-    res.json({ message });
-
+    res.json({ message: data.choices[0].message.content });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Erro interno no servidor" });
   }
 });
 
-// ----------------------
-// Rota para geração de imagem
-// ----------------------
 app.post("/api/image", async (req, res) => {
   const { prompt } = req.body;
-
   if (!prompt) return res.status(400).json({ error: "Prompt vazio" });
 
   try {
@@ -59,26 +44,16 @@ app.post("/api/image", async (req, res) => {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
       },
-      body: JSON.stringify({
-        prompt,
-        n: 1,
-        size: "512x512"
-      })
+      body: JSON.stringify({ prompt, n: 1, size: "512x512" })
     });
-
     const data = await response.json();
-    const imageUrl = data.data[0].url;
-    res.json({ imageUrl });
-
+    res.json({ imageUrl: data.data[0].url });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Erro ao gerar imagem" });
   }
 });
 
-// ----------------------
-// Iniciar servidor
-// ----------------------
 app.listen(PORT, () => {
-  console.log(`Server rodando em http://localhost:${PORT}`);
+  console.log(`Server rodando na porta ${PORT}`);
 });
