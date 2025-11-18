@@ -1,6 +1,7 @@
-const express = require("express");
-const fetch = require("node-fetch");
-const cors = require("cors");
+// server.js
+import express from "express";
+import fetch from "node-fetch";
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -9,6 +10,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
+// Chat
 app.post("/api/chat", async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: "Prompt vazio" });
@@ -33,6 +35,7 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
+// Imagem
 app.post("/api/image", async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: "Prompt vazio" });
@@ -54,6 +57,4 @@ app.post("/api/image", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server rodando na porta ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server rodando em http://localhost:${PORT}`));
