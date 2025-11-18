@@ -1,9 +1,8 @@
 {
   "name": "genux-ai",
   "version": "1.0.0",
-  "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.cjs"
   },
   "dependencies": {
     "express": "^4.18.2",
